@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20160327154500) do
 
   create_table "categories", force: :cascade do |t|
     t.string   "name",        limit: 50,                    null: false
@@ -46,10 +46,10 @@ ActiveRecord::Schema.define(version: 0) do
   add_index "countries", ["name"], name: "IXFX_name", using: :btree
   add_index "countries", ["phone_code"], name: "IXFX_phone_code", using: :btree
 
-  create_table "currency", force: :cascade do |t|
-    t.string   "name",       limit: 50,                         null: false
-    t.string   "code",       limit: 5,                          null: false
-    t.decimal  "rate",                  precision: 6, scale: 4, null: false
+  create_table "currencies", force: :cascade do |t|
+    t.string   "name",       limit: 50,                          null: false
+    t.string   "code",       limit: 5,                           null: false
+    t.decimal  "rate",                  precision: 10, scale: 4, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -58,7 +58,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.integer  "seller_id",   limit: 4
     t.integer  "buyer_id",    limit: 4
     t.integer  "product_id",  limit: 4
-    t.decimal  "price",                 precision: 10, scale: 2, null: false
+    t.decimal  "price",                 precision: 12, scale: 2, null: false
     t.integer  "currency_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(version: 0) do
   add_index "deals", ["seller_id"], name: "IXFK_deal_user", using: :btree
 
   create_table "payment_infos", force: :cascade do |t|
-    t.string   "type",        limit: 50,    null: false
+    t.string   "name",        limit: 50,    null: false
     t.text     "data",        limit: 65535, null: false
     t.integer  "currency_id", limit: 4
     t.integer  "user_id",     limit: 4
@@ -84,12 +84,13 @@ ActiveRecord::Schema.define(version: 0) do
   create_table "products", force: :cascade do |t|
     t.string   "name",        limit: 250,                                          null: false
     t.string   "description", limit: 500,                                          null: false
-    t.decimal  "price",                   precision: 10, scale: 2,                 null: false
+    t.decimal  "price",                   precision: 12, scale: 2,                 null: false
     t.integer  "quantity",    limit: 4,                                            null: false
     t.integer  "rating",      limit: 4,                            default: 0,     null: false
     t.integer  "rates_count", limit: 4,                            default: 0,     null: false
     t.boolean  "is_paused",                                        default: false
     t.boolean  "is_archived",                                      default: false
+    t.boolean  "is_blocked",                                       default: false
     t.integer  "currency_id", limit: 4
     t.integer  "category_id", limit: 4
     t.integer  "owner_id",    limit: 4
@@ -133,49 +134,55 @@ ActiveRecord::Schema.define(version: 0) do
   end
 
   create_table "property_values", force: :cascade do |t|
-    t.text     "value",             limit: 65535,                 null: false
-    t.integer  "property_id",       limit: 4
-    t.integer  "product_id",        limit: 4
-    t.boolean  "to_inform_manager",               default: false
+    t.text     "value",       limit: 65535, null: false
+    t.integer  "property_id", limit: 4
+    t.integer  "product_id",  limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "property_values", ["product_id"], name: "IXFK_property_value_product", using: :btree
   add_index "property_values", ["property_id"], name: "IXFK_property_value_property_type", using: :btree
-  add_index "property_values", ["to_inform_manager"], name: "IXFX_to_inform_manager", using: :btree
 
   create_table "roles", force: :cascade do |t|
-    t.string   "name",                  limit: 50
-    t.boolean  "can_see_products",                 default: false
-    t.boolean  "can_create_products",              default: false
-    t.boolean  "can_create_categories",            default: false
-    t.boolean  "can_buy_products",                 default: false
-    t.boolean  "can_comment",                      default: false
-    t.boolean  "can_moderate",                     default: false
-    t.boolean  "can_chat",                         default: false
-    t.boolean  "can_see_statistics",               default: false
+    t.string   "name",                        limit: 50
+    t.boolean  "can_see_products",                       default: false
+    t.boolean  "can_create_products",                    default: false
+    t.boolean  "can_create_categories",                  default: false
+    t.boolean  "can_buy_products",                       default: false
+    t.boolean  "can_comment",                            default: false
+    t.boolean  "can_moderate",                           default: false
+    t.boolean  "can_chat",                               default: false
+    t.boolean  "can_see_statistics",                     default: false
+    t.boolean  "can_create_moderators",                  default: false
+    t.boolean  "can_create_priveleged_users",            default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "transactions", force: :cascade do |t|
-    t.integer  "sender_id",   limit: 4
-    t.integer  "receiver_id", limit: 4
-    t.decimal  "price",                 precision: 6, scale: 4, null: false
-    t.integer  "deal_id",     limit: 4
+    t.integer  "sender_id",                limit: 4
+    t.integer  "sender_payment_info_id",   limit: 4
+    t.integer  "receiver_id",              limit: 4
+    t.integer  "reseiver_payment_info_id", limit: 4
+    t.decimal  "price",                              precision: 10, scale: 4, null: false
+    t.integer  "deal_id",                  limit: 4
+    t.integer  "currency_id",              limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "transactions", ["currency_id"], name: "IXFK_transactions_currencies", using: :btree
   add_index "transactions", ["deal_id"], name: "FK_transaction_deal", using: :btree
   add_index "transactions", ["receiver_id"], name: "FK_transaction_user_02", using: :btree
+  add_index "transactions", ["reseiver_payment_info_id"], name: "IXFK_transactions_payment_infos_02", using: :btree
   add_index "transactions", ["sender_id"], name: "FK_transaction_user", using: :btree
+  add_index "transactions", ["sender_payment_info_id"], name: "IXFK_transactions_payment_infos", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",              limit: 254,                   null: false
     t.string   "login",              limit: 50,                    null: false
-    t.string   "encrypted_password", limit: 50,                    null: false
+    t.string   "encrypted_password", limit: 100,                    null: false
     t.string   "first_name",         limit: 50,                    null: false
     t.string   "last_name",          limit: 50,                    null: false
     t.string   "passport_id",        limit: 50,                    null: false
@@ -189,6 +196,8 @@ ActiveRecord::Schema.define(version: 0) do
     t.boolean  "is_archived",                      default: false, null: false
     t.integer  "role_id",            limit: 4
     t.integer  "country_id",         limit: 4
+    t.string   "token",              limit: 50
+    t.datetime "token_expires_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -197,23 +206,27 @@ ActiveRecord::Schema.define(version: 0) do
   add_index "users", ["email"], name: "IXFK_email", using: :btree
   add_index "users", ["login"], name: "IXFK_login", using: :btree
   add_index "users", ["role_id"], name: "IXFK_user_role", using: :btree
+  add_index "users", ["token"], name: "IX_token", using: :btree
 
   add_foreign_key "comments", "products", name: "FK_comment_product", on_update: :cascade, on_delete: :cascade
   add_foreign_key "comments", "users", name: "FK_comment_user", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "deals", "currency", name: "FK_deal_currency", on_update: :cascade
+  add_foreign_key "deals", "currencies", name: "FK_deal_currency", on_update: :cascade
   add_foreign_key "deals", "products", name: "FK_deal_product", on_update: :cascade, on_delete: :nullify
   add_foreign_key "deals", "users", column: "seller_id", name: "FK_deal_user", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "payment_infos", "currency", name: "FK_payment_info_currency", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "payment_infos", "currencies", name: "FK_payment_info_currency", on_update: :cascade, on_delete: :cascade
   add_foreign_key "payment_infos", "users", name: "FK_payment_info_user", on_update: :cascade, on_delete: :nullify
   add_foreign_key "products", "categories", name: "FK_product_category", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "products", "currency", name: "FK_product_currency"
+  add_foreign_key "products", "currencies", name: "FK_product_currency"
   add_foreign_key "products", "users", column: "owner_id", name: "FK_product_user", on_update: :cascade, on_delete: :cascade
   add_foreign_key "properties", "categories", name: "FK_property_type_category", on_update: :cascade, on_delete: :cascade
   add_foreign_key "properties", "property_types", name: "FK_property_property_type", on_update: :cascade, on_delete: :cascade
   add_foreign_key "property_parameters", "properties", name: "FK_property_parameters_property_type", on_update: :cascade, on_delete: :cascade
   add_foreign_key "property_values", "products", name: "FK_property_value_product", on_update: :cascade, on_delete: :cascade
   add_foreign_key "property_values", "properties", name: "FK_property_value_property_type", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "transactions", "currencies", name: "FK_transactions_currencies"
   add_foreign_key "transactions", "deals", name: "FK_transaction_deal", on_delete: :nullify
+  add_foreign_key "transactions", "payment_infos", column: "reseiver_payment_info_id", name: "FK_transactions_payment_infos_02", on_update: :cascade
+  add_foreign_key "transactions", "payment_infos", column: "sender_payment_info_id", name: "FK_transactions_payment_infos", on_update: :cascade
   add_foreign_key "transactions", "users", column: "receiver_id", name: "FK_transaction_user_02", on_delete: :nullify
   add_foreign_key "transactions", "users", column: "sender_id", name: "FK_transaction_user", on_update: :cascade, on_delete: :nullify
   add_foreign_key "users", "countries", name: "FK_user_country", on_update: :cascade

@@ -9,4 +9,6 @@ gem 'spring', :group => :development
 gem 'tzinfo-data'
 gem 'pry-rails', :group => :development
 gem 'mysql2'
-gem 'devise'
+gem 'rspec-rails'
+gem 'rack-cors'
+gem 'angular_rails_csrf'
