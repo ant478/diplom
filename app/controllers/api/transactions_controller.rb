@@ -1,10 +1,11 @@
 class Api::TransactionsController < ApplicationController
-  before_action :check_params
+  #before_action :check_params
 
   def index
     if current_user.can_see_statistics?
-      transactions = Transaction.where_params(params[:transaction])
-      transactions = transactions.map{ |transaction| transaction.as_json_full }
+      #transactions = Transaction.where_params(params[:transaction])
+      transaction = Transaction.all
+      transactions = transactions.map{ |transaction| transaction.as_json }
       render_ok({ transactions: transactions }.as_json)
     else 
       render_forbidden

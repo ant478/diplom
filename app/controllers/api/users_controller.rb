@@ -3,8 +3,9 @@ class Api::UsersController < ApplicationController
   before_action :check_params, except: :index
 
   def index
-    users = User.where_params(params[:user])
-    users = users.map{ |user| user.as_json_short }
+    #users = User.where_params(params[:user])
+    users = User.all
+    users = users.map{ |user| user.as_json }
     render_ok({users: users}.as_json)
   end
 
@@ -29,7 +30,7 @@ class Api::UsersController < ApplicationController
 
     user = User.new_from_params(params[:user])
     if user.save
-      render_created(user.as_json_full)
+      render_created(user.as_json)
     else
       render_bad_request("Some parameters are invalid")
     end
@@ -50,7 +51,7 @@ class Api::UsersController < ApplicationController
         end
       end
       if user.save
-        render_ok(user.as_json_full)
+        render_ok(user.as_json)
       else
         render_bad_request
       end

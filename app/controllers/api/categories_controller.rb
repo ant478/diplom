@@ -1,15 +1,16 @@
 class Api::CategoriesController < ApplicationController
-  before_action :check_params
+  #before_action :check_params
 
   def index
-    categories = Category.where_params(params[:category])
-    categories = categories.map{ |category| category.as_json_full }
+    #categories = Category.where_params(params[:category])
+    categories = Category.all
+    categories = categories.map{ |category| category.as_json }
     render_ok({ categories: categories }.as_json)
   end
 
   def show
     category = category.where(id: params[:category][:id]).first if params[:category][:id]
-    render_ok category.to_json_full if category.present?
+    render_ok category.as_json if category.present?
     render_not_found if category.blank?
   end
 
@@ -17,7 +18,7 @@ class Api::CategoriesController < ApplicationController
     if current_user.can_create_categories?
       category = Category.new_from_params(params[:category])
       if category.save
-        render_created(category.as_json_full)
+        render_created(category.as_json)
       else
         render_bad_request("Some parameters are invalid")
       end
@@ -32,7 +33,7 @@ class Api::CategoriesController < ApplicationController
       if category.present?
         category.update_allowed_fields(params[:category])
         if category.save
-          render_ok(category.to_json_full)
+          render_ok(category.as_json)
         else
           render_bad_request("Some parameters are invalid")
         end

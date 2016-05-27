@@ -1,8 +1,9 @@
 class Api::CommentsController < ApplicationController
   def index
     if current_user.can_see_products?
-      comments = Comment.where_params(params[:comment])
-      comments = comments.map{ |comment| comment.as_json_full }
+      #comments = Comment.where_params(params[:comment])
+      comments = Comment.all
+      comments = comments.map{ |comment| comment.as_json }
       render_ok({ comments: comments }.as_json)
     else
       render_forbidden

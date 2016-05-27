@@ -1,7 +1,8 @@
 class Api::DealsController < ApplicationController
   def index
     if current_user.can_see_products?
-      deals = Deal.where_params(params[:deal])
+      #deals = Deal.where_params(params[:deal])
+      deals = Deal.all
       deals = deals.map{ |deal| deal.as_json }
       render_ok({ deals: deals }.as_json)
     else
@@ -13,7 +14,7 @@ class Api::DealsController < ApplicationController
     if current_user.can_buy_products?
       deal = Deal.new_from_params(params[:deal])
       if deal.buyer_id == current_user.id && deal.save
-        render_created(deal.as_json_full)
+        render_created(deal.as_json)
       else
         render_bad_request
       end

@@ -65,7 +65,7 @@ class ApplicationController < ActionController::Base
   def authenticate_token
     token = request.headers['auth-token']
     user = User.where(token: token).first
-    return user.present? && !token_expired?
+    return user.present? && !user.token_expired?
   end
 
   def render_unauthorized

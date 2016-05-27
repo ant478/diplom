@@ -1,0 +1,10 @@
+<div class="users-list page-template" ng-controller="UsersListCtrl">
+  <div class="template-content">
+    <ul class="users-list">
+      <li class="user" ng-repeat="user in users_list">
+        <span ng-bind="user.email"></span>
+        <span ng-bind="user.login"></span>
+      </li>
+    </ul>
+  </div>
+</div>

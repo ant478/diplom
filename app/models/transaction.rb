@@ -31,45 +31,4 @@ class Transaction < ActiveRecord::Base
     return transactions
   end
 
-  def as_json_full
-    self.as_json(
-      only: [
-        :id, 
-        :price,
-        :creted_at
-      ],
-      include: {
-        sender: {
-          :only => [
-            :id,
-            :login,
-            :avatar_url
-          ]
-        },
-        receiver: {
-          :only => [
-            :id,
-            :login,
-            :avatar_url
-          ]
-        },
-        sender_payment_info: {
-          :only => [
-            :id,
-            :name,
-            :data,
-            :currency_id
-          ]
-        },
-        reseiver_payment_info: {
-          :only => [
-            :id,
-            :name,
-            :data,
-            :currency_id
-          ]
-        }
-      }
-    )
-  end
 end

@@ -1,8 +1,9 @@
 class Api::ProductsController < ApplicationController
   def index
     if current_user.can_see_products? 
-      products = Product.where_params(params[:product])
-      products = products.map{ |product| product.as_json_short }
+      #products = Product.where_params(params[:product])
+      products = Product.all
+      products = products.map{ |product| product.as_json }
       render_ok({ products: products }.as_json)
     else
       render_forbidden
@@ -12,7 +13,7 @@ class Api::ProductsController < ApplicationController
   def show
     if current_user.can_see_products?
       product = product.where(id: params[:product][:id]).first if params[:product][:id]
-      render_ok product.to_json_full if product.present?
+      render_ok product.as_json if product.present?
       render_not_found if product.blank?
     else
       render_forbidden
@@ -21,9 +22,10 @@ class Api::ProductsController < ApplicationController
 
   def create
     if current_user.can_create_products?
-      product = product.new_from_params(params[:product])
-      if product.owner_id == current_user.id && product.save
-        render_created(product.as_json_full)
+      product = Product.new_from_params(params[:product])
+      product.owner_id = current_user.id
+      if product.save
+        render_created(product.as_json)
       else
         render_bad_request("Some parameters are invalid")
       end
@@ -38,7 +40,7 @@ class Api::ProductsController < ApplicationController
       if product.present?
         product.update_allowed_fields(params[:product])
         if product.save
-          render_ok(product.to_json_full)
+          render_ok(product.as_json)
         else
           render_bad_request("Some parameters are invalid")
         end

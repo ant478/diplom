@@ -114,49 +114,6 @@ class User < ActiveRecord::Base
     self.role = Role.find_by_name("Admin")
   end
 
-  def as_json_full
-  	self.as_json(
-  		only: [
-  			:id,
-  			:login,
-        :email,
-        :first_name,
-        :last_name,
-        :passport_id,
-        :avatar_url,
-        :address_line_1,
-        :address_line_2,
-        :post_index,
-        :phone_number,
-        :birth_date,
-        :country_id,
-        :role_id],
-    	include: {
-    		payment_infos: {
-	    		:only => [
-	    			:id,
-	    			:name,
-	    			:data,
-	    			:currency_id]
-    		}
-    	}
-    )
-  end
-
-  def as_json_short
-  	self.as_json(
-  		:only => [
-  			:id,
-  			:login,				
-        :email,
-        :first_name,
-        :last_name,
-        :avatar_url,
-        :role_id
-      ]
-    )
-  end
-
   def self.password_valid?(password)
     password.present? && password.is_a?(String) && password.length > 5
   end
@@ -170,7 +127,7 @@ class User < ActiveRecord::Base
   end
 
   def token_expired?
-    self.token_expires_at > Time.now
+    self.token_expires_at <= Time.now
   end
 
   def expire_token

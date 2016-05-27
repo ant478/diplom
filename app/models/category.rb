@@ -67,35 +67,4 @@ class Category < ActiveRecord::Base
   def archived?
     self.is_archived
   end
-
-  def as_json_full
-    self.as_json(
-      only: [
-        :id, 
-        :name,
-        :description,
-        :avatar_link,
-        :is_archived
-      ],
-      include: {
-        properties: {
-          :only => [
-            :id,
-            :name,
-            :description,
-            :property_type_id
-          ],
-          include: {
-            property_parameters: {
-              :only => [
-                :id,
-                :key,
-                :value
-              ]
-            }
-          }
-        }
-      }
-    )
-  end    
 end

@@ -464,6 +464,17 @@ property_types = [
 PropertyType.delete_all
 PropertyType.create(property_types)
 
+categories = [
+  { name: "Мопед", description: "Двух- или трёхколёсное транспортное средство с двигателем внутреннего сгорания рабочим объёмом не более 50 кубических сантиметров и максимальной конструктивной скоростью не более 50 км/ч ", avatar_link: "http://minsk-scooter.by/wp-content/uploads/2012/04/moped_viper_delta.jpg", is_archived: false },
+  { name: "Супербайк", description: "Неофициальное название дорожных мотоциклов спортивного типа (также Спортбайк), конструкция которых имеет черты, свойственные гоночным мотоциклам", avatar_link: "http://www.goldengod.ru/wp-content/uploads/2009/11/ducati-1198s.jpg", is_archived: false },
+  { name: "Чоппер", description: "В отличие от бобберов, у будущего чоппера убирается не только все лишнее — переднее крыло, иногда передний тормоз, глубокое заднее крыло, но также подвергается серьёзной переделке и сама рама.", avatar_link: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/ZweiRadMuseumNSU_EasyRider.JPG/250px-ZweiRadMuseumNSU_EasyRider.JPG", is_archived: false },
+  { name: "Мотовездеход", description: "Небольшое транспортное средство, похожее на мотоцикл, но имеющее более двух колёс", avatar_link: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Aeon_Cobra_220_ATV_Quad_bike.JPG/220px-Aeon_Cobra_220_ATV_Quad_bike.JPG", is_archived: false },
+  { name: "Питбайк", description: "Это разновидность мотоцикла, пригодного для мотокросса или супермото.", avatar_link: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/PitBike.jpg/200px-PitBike.jpg", is_archived: false }
+]
+
+Category.delete_all
+Category.create(categories)
+
 #Test data
 users_params = [
   { email: "admin@admin.com",
@@ -478,7 +489,7 @@ users_params = [
     post_index: "asd123",
     phone_number: "12312312323",
     birth_date: Time.now,
-    role_id: Role.where(name: "Admin"),
+    role_id: Role.where(name: "Admin").first.id,
     country_id: Country.first,
     token: "stub",
     token_expires_at: Time.now + 1.day },
@@ -495,7 +506,7 @@ users_params = [
     post_index: "asd123",
     phone_number: "12312312323",
     birth_date: Time.now,
-    role_id: Role.where(name: "Moderator"),
+    role_id: Role.where(name: "Moderator").first.id,
     country_id: Country.first,
     token: "stub",
     token_expires_at: Time.now + 1.day },
@@ -512,7 +523,7 @@ users_params = [
     post_index: "asd123",
     phone_number: "12312312323",
     birth_date: Time.now,
-    role_id: Role.where(name: "Privileged"),
+    role_id: Role.where(name: "Privileged").first.id,
     country_id: Country.first,
     token: "stub",
     token_expires_at: Time.now + 1.day },
@@ -529,7 +540,7 @@ users_params = [
     post_index: "asd123",
     phone_number: "12312312323",
     birth_date: Time.now,
-    role_id: Role.where(name: "User"),
+    role_id: Role.where(name: "User").first.id,
     country_id: Country.first,
     token: "stub",
     token_expires_at: Time.now + 1.day },
@@ -546,7 +557,7 @@ users_params = [
     post_index: "asd123",
     phone_number: "12312312323",
     birth_date: Time.now,
-    role_id: Role.where(name: "User"),
+    role_id: Role.where(name: "User").first.id,
     country_id: Country.first,
     token: "stub",
     token_expires_at: Time.now + 1.day }]

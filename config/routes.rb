@@ -7,6 +7,6 @@ Rails.application.routes.draw do
     resources :deals, only: [:index, :show, :create]
     resources :transactions, only: [:index]
     resources :comments, only: [:index, :create, :destroy]
-    resources :deals, only: [:index, :create]
+    resources :currencies, only: [:index]
   end
 end

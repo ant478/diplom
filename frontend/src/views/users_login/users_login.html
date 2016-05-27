@@ -1,0 +1,19 @@
+<div class="autorisation page-template">
+  <div class="autorisation-form template-content">
+    <form ng-submit="loginUser(user)">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" ng-model="user.email" required="required" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" ng-model="user.password" required="required" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg">Log in</button>
+    </form>
+    
+    <p class="form-message error-message" ng-bind="autorisation_success_message" ng-show="autorisation_success_message"></p>
+    <p class="form-message error-message" ng-bind="autorisation_error_message" ng-show="autorisation_error_message"></p>
+  </div>
+</div>
